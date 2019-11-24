@@ -5,6 +5,9 @@ namespace Fhp\Response;
 use Fhp\Segment\CAZ\HICAZv1;
 use Fhp\Segment\HKCAZ;
 
+/**
+ * @deprecated TODO Remove
+ */
 class BankToCustomerAccountReportHICAZ extends Response
 {
     const SEG_ACCOUNT_INFORMATION = 'HICAZ';

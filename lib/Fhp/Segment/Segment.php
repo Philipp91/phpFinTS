@@ -4,6 +4,9 @@ namespace Fhp\Segment;
 
 use Fhp\Syntax\Parser;
 
+/**
+ * @deprecated TODO Remove
+ */
 class Segment extends AbstractSegment
 {
     /**

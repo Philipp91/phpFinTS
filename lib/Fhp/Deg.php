@@ -2,6 +2,7 @@
 
 namespace Fhp;
 
+/** @deprecated TODO Remove */
 class Deg
 {
     /** @var array */

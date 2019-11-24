@@ -4,6 +4,9 @@ namespace Fhp\Response;
 
 use Fhp\Model\SEPAStandingOrder;
 
+/**
+ * @deprecated TODO Remove
+ */
 class GetSEPAStandingOrders extends Response
 {
     const SEG_ACCOUNT_INFORMATION = 'HICDB';

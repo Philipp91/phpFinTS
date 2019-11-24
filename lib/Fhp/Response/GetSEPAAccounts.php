@@ -4,6 +4,9 @@ namespace Fhp\Response;
 
 use Fhp\Model\SEPAAccount;
 
+/**
+ * @deprecated TODO Remove
+ */
 class GetSEPAAccounts extends Response
 {
     const SEG_ACCOUNT_INFORMATION = 'HISPA';

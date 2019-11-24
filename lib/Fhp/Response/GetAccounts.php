@@ -4,6 +4,9 @@ namespace Fhp\Response;
 
 use Fhp\Model\Account;
 
+/**
+ * @deprecated TODO Remove
+ */
 class GetAccounts extends Response
 {
     const SEG_ACCOUNT_INFORMATION = 'HIUPD';

@@ -7,6 +7,9 @@ use Fhp\Segment\HIRMS\HIRMSv2;
 use Fhp\Segment\HIRMS\Rueckmeldungscode;
 use Fhp\Segment\TAN\HITANSv6;
 
+/**
+ * @deprecated TODO Remove
+ */
 class GetVariables extends Response
 {
     public function get()

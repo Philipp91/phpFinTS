@@ -5,6 +5,9 @@ namespace Fhp\Response;
 use Fhp\Model;
 use Fhp\Segment\TAN\HITANv6;
 
+/**
+ * @deprecated TODO Remove
+ */
 class GetTANRequest extends Response
 {
     const SEG_ACCOUNT_INFORMATION = 'HITAN';

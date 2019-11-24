@@ -22,6 +22,9 @@ use Fhp\Segment\HKVVB;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
+/**
+ * @deprecated TODO Remove
+ */
 class Dialog
 {
     const DEFAULT_COUNTRY_CODE = 280;

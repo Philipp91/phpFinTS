@@ -2,6 +2,7 @@
 
 namespace Fhp\Segment;
 
+/** @deprecated TODO Remove */
 abstract class AbstractSegment implements SegmentInterface
 {
     const SEGMENT_SEPARATOR = "'";

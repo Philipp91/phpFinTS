@@ -5,6 +5,9 @@ namespace Fhp\Message;
 use Fhp\Segment\HNHBK;
 use Fhp\Segment\SegmentInterface;
 
+/**
+ * @deprecated TODO Remove
+ */
 class AbstractMessage
 {
     const OPT_PINTAN_MECH = 'pintan_mechanism';

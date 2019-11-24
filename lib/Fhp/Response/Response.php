@@ -5,11 +5,15 @@ namespace Fhp\Response;
 use Fhp\FinTsInternal;
 use Fhp\Message\AbstractMessage;
 use Fhp\Segment;
+use Fhp\Segment;
 use Fhp\Segment\NameMapping;
 use Fhp\Segment\SegmentInterface;
 use Fhp\Syntax\Delimiter;
 use Fhp\Syntax\Parser;
 
+/**
+ * @deprecated TODO Remove
+ */
 class Response
 {
     /** @var string */

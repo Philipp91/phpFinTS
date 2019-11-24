@@ -6,6 +6,9 @@ use Fhp\Model\StatementOfAccount\Statement;
 use Fhp\Model\StatementOfAccount\StatementOfAccount;
 use Fhp\Model\StatementOfAccount\Transaction;
 
+/**
+ * @deprecated TODO Remove
+ */
 class GetStatementOfAccount extends Response
 {
     const SEG_ACCOUNT_INFORMATION = 'HIKAZ';

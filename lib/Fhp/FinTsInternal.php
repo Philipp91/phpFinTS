@@ -17,6 +17,7 @@ use Fhp\Segment\HKCDL;
 use Fhp\Segment\HKKAZ;
 use Fhp\Segment\HKTAN;
 
+/** @deprecated TODO Remove */
 abstract class FinTsInternal
 {
     protected $url;

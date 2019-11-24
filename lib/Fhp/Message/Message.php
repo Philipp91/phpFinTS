@@ -13,6 +13,7 @@ use Fhp\Segment\SegmentInterface;
 
 /**
  * NOTE: There is also the (newer) Fhp\Protocol\Message class.
+ * @deprecated TODO Remove
  */
 class Message extends AbstractMessage
 {

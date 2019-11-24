@@ -2,6 +2,9 @@
 
 namespace Fhp\Segment;
 
+/**
+ * @deprecated TODO Remove
+ */
 class NameMapping
 {
     protected static $mapping = [

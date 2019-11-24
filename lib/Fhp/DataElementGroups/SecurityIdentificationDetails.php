@@ -4,6 +4,9 @@ namespace Fhp\DataElementGroups;
 
 use Fhp\Deg;
 
+/**
+ * @deprecated TODO Remove
+ */
 class SecurityIdentificationDetails extends Deg
 {
     const PARTY_MS = 1;   // sender
