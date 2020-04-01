@@ -3,7 +3,6 @@
 namespace Fhp\Protocol;
 
 use Fhp\BaseAction;
-use Fhp\Model\NoPsd2TanMode;
 use Fhp\Model\TanMode;
 use Fhp\Options\Credentials;
 use Fhp\Options\FinTsOptions;
@@ -95,15 +94,15 @@ class DialogInitialization extends BaseAction
      */
     public function __construct(FinTsOptions $options, Credentials $credentials, ?TanMode $tanMode, ?string $tanMedium, ?string $kundensystemId, ?string $hktanRef = 'HKIDN')
     {
-        if ($hktanRef !== null && $tanMode === null) {
-            throw new \InvalidArgumentException('hktanRef is ignored unless a tanMode is given');
-        }
         $this->options = $options;
         $this->credentials = $credentials;
-        $this->tanMode = $tanMode instanceof NoPsd2TanMode ? null : $tanMode;
+        $this->tanMode = $tanMode;
         $this->tanMedium = $tanMedium;
         $this->kundensystemId = $kundensystemId;
         $this->hktanRef = $hktanRef;
+        if ($this->hktanRef !== null && $this->tanMode === null) {
+            throw new \InvalidArgumentException('hktanRef is ignored unless a tanMode is given');
+        }
     }
 
     public function serialize(): string

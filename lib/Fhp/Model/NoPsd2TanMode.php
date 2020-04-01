@@ -12,7 +12,10 @@ namespace Fhp\Model;
  */
 final class NoPsd2TanMode implements TanMode
 {
-    const ID = -1;
+    /**
+     * Note: This ID is (also) used to indicate a single-step TAN mode.
+     */
+    const ID = 999;
 
     /** {@inheritdoc} */
     public function getId(): int
