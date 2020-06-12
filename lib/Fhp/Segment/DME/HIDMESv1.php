@@ -3,6 +3,8 @@
 namespace Fhp\Segment\DME;
 
 use Fhp\Segment\BaseGeschaeftsvorfallparameter;
+use Fhp\Segment\DSE\HIDXES;
+use Fhp\Segment\DSE\SEPADirectDebitMinimalLeadTimeProvider;
 
 /**
  * Segment: Terminierte SEPA-Sammellastschrift einreichen Parameter

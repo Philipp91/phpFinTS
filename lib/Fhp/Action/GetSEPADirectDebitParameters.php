@@ -5,8 +5,8 @@ namespace Fhp\Action;
 use Fhp\BaseAction;
 use Fhp\Protocol\BPD;
 use Fhp\Protocol\UPD;
-use Fhp\Segment\DME\HIDXES;
-use Fhp\Segment\DME\MinimaleVorlaufzeitSEPALastschrift;
+use Fhp\Segment\DSE\HIDXES;
+use Fhp\Segment\DSE\MinimaleVorlaufzeitSEPALastschrift;
 
 /**
  * Retrieves information about SEPA Direct Debit Requests
@@ -14,7 +14,7 @@ use Fhp\Segment\DME\MinimaleVorlaufzeitSEPALastschrift;
 class GetSEPADirectDebitParameters extends BaseAction
 {
     const SEQUENCE_TYPES = ['FRST', 'OOFF', 'FNAL', 'RCUR'];
-    const CORE_TYPES = ['CORE', 'COR1'];
+    const CORE_TYPES = ['CORE', 'COR1', 'B2B'];
 
     /** @var string */
     private $coreType;
@@ -40,14 +40,23 @@ class GetSEPADirectDebitParameters extends BaseAction
         $result->coreType = $coreType;
         $result->seqType = $seqType;
         $result->singleDirectDebit = $singleDirectDebit;
-
         return $result;
     }
 
     /** {@inheritdoc} */
     public function createRequest(BPD $bpd, ?UPD $upd)
     {
-        $type = $this->singleDirectDebit ? 'HIDSES' : 'HIDMES';
+        switch ($this->coreType) {
+            case 'CORE':
+            case 'COR1':
+                $type = $this->singleDirectDebit ? 'HIDSES' : 'HIDMES';
+                break;
+            case 'B2B':
+                $type = $this->singleDirectDebit ? 'HIBSES' : 'HIBMES';
+                break;
+            default:
+                throw new \InvalidArgumentException('Unknown CORE type, possible values are ' . implode(', ', self::CORE_TYPES));
+        }
 
         /** @var HIDXES $hidxes */
         $hidxes = $bpd->requireLatestSupportedParameters($type);

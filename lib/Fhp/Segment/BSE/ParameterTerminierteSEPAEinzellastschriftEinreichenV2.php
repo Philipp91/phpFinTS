@@ -1,8 +1,10 @@
 <?php
 
-namespace Fhp\Segment\DSE;
+namespace Fhp\Segment\BSE;
 
 use Fhp\Segment\BaseDeg;
+use Fhp\Segment\DSE\MinimaleVorlaufzeitSEPALastschrift;
+use Fhp\Segment\DSE\SEPADirectDebitMinimalLeadTimeProvider;
 
 class ParameterTerminierteSEPALastschriftEinreichenV2 extends BaseDeg implements SEPADirectDebitMinimalLeadTimeProvider
 {
@@ -18,7 +20,7 @@ class ParameterTerminierteSEPALastschriftEinreichenV2 extends BaseDeg implements
     /** @var string */
     public $maximaleVorlaufzeitCodiert;
 
-    public function getMinimalLeadTime(string $seqType, string $coreType = 'CORE'): ?MinimaleVorlaufzeitSEPALastschrift
+    public function getMinimalLeadTime(string $seqType, string $coreType = 'B2B'): ?MinimaleVorlaufzeitSEPALastschrift
     {
         $parsed = MinimaleVorlaufzeitSEPALastschrift::parseCoded($this->minimaleVorlaufzeitCodiert);
         return $parsed[$coreType][$seqType] ?? null;

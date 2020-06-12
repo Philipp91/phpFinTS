@@ -1,8 +1,8 @@
 <?php
 
-namespace Fhp\Segment\DME;
+namespace Fhp\Segment\BME;
 
-use Fhp\Segment\DSE\ParameterTerminierteSEPAEinzellastschriftEinreichenV2;
+use Fhp\Segment\BSE\ParameterTerminierteSEPAEinzellastschriftEinreichenV2;
 
 class ParameterTerminierteSEPASammellastschriftEinreichenV2 extends ParameterTerminierteSEPAEinzellastschriftEinreichenV2
 {

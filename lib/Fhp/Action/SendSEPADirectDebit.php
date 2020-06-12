@@ -7,6 +7,10 @@ use Fhp\Model\SEPAAccount;
 use Fhp\Protocol\BPD;
 use Fhp\Protocol\UPD;
 use Fhp\Segment\BaseSegment;
+use Fhp\Segment\BME\HKBMEv1;
+use Fhp\Segment\BME\HKBMEv2;
+use Fhp\Segment\BSE\HKBSEv1;
+use Fhp\Segment\BSE\HKBSEv2;
 use Fhp\Segment\Common\Btg;
 use Fhp\Segment\Common\Kti;
 use Fhp\Segment\DME\HIDMESv1;
@@ -41,6 +45,9 @@ class SendSEPADirectDebit extends BaseAction
     /** @var bool */
     private $singleDirectDebit = false;
 
+    /** @var string */
+    private $coreType;
+
     public static function create(SEPAAccount $account, string $painMessage): SendSEPADirectDebit
     {
         if (preg_match('/xmlns="(?<namespace>[^"]+)"/s', $painMessage, $matches) === 1) {
@@ -53,8 +60,14 @@ class SendSEPADirectDebit extends BaseAction
         $nbOfTxs = substr_count($painMessage, '<DrctDbtTxInf>');
         $ctrlSum = null;
 
-        if (preg_match('/<GrpHdr>.*<CtrlSum>(?<ctrlsum>[.0-9]+)<\/CtrlSum>.*<\/GrpHdr>/s', $painMessage, $matches) === 1) {
+        if (preg_match('@<GrpHdr>.*<CtrlSum>(?<ctrlsum>[.0-9]+)</CtrlSum>.*</GrpHdr>@s', $painMessage, $matches) === 1) {
             $ctrlSum = $matches['ctrlsum'];
+        }
+
+        if (preg_match('@<PmtTpInf>.*<LclInstrm>.*<Cd>(?<coretype>CORE|COR1|B2B)</Cd>.*</LclInstrm>.*</PmtTpInf>@s', $painMessage, $matches) === 1) {
+            $coreType = $matches['coretype'];
+        } else {
+            throw new \InvalidArgumentException('The type CORE/COR1/B2B is missing in PAIN message');
         }
 
         if ($nbOfTxs > 1 && is_null($ctrlSum)) {
@@ -66,6 +79,7 @@ class SendSEPADirectDebit extends BaseAction
         $result->painMessage = $painMessage;
         $result->painNamespace = $painNamespace;
         $result->ctrlSum = $ctrlSum;
+        $result->coreType = $coreType;
 
         $result->singleDirectDebit = $nbOfTxs === 1;
 
@@ -81,8 +95,18 @@ class SendSEPADirectDebit extends BaseAction
             $useSingleDirectDebit = false;
         }
 
-        /** @var HIDXES|BaseSegment $hidxes */
-        $hidxes = $bpd->requireLatestSupportedParameters($useSingleDirectDebit ? 'HIDSES' : 'HIDMES');
+        /* @var HIDXES|BaseSegment $hidxes */
+        switch ($this->coreType) {
+            case 'CORE':
+            case 'COR1':
+                $hidxes = $bpd->requireLatestSupportedParameters($useSingleDirectDebit ? 'HIDSES' : 'HIDMES');
+                break;
+            case 'B2B':
+                $hidxes = $bpd->requireLatestSupportedParameters($useSingleDirectDebit ? 'HIBSES' : 'HIBMES');
+                break;
+            default:
+                throw new UnsupportedException('Unsupported Type: ' . $this->coreType);
+        }
 
         $supportedPainNamespaces = null;
 
@@ -105,15 +129,35 @@ class SendSEPADirectDebit extends BaseAction
 
         /** @var HKDMEv1|HKDSEv1 $hkdxe */
         $hkdxe = null;
-        switch ($hidxes->getVersion()) {
-            case 1:
-                $hkdxe = $useSingleDirectDebit ? HKDSEv1::createEmpty() : HKDMEv1::createEmpty();
-            break;
-            case 2:
-                $hkdxe = $useSingleDirectDebit ? HKDSEv2::createEmpty() : HKDMEv2::createEmpty();
-            break;
+        switch ($this->coreType) {
+            case 'CORE':
+            case 'COR1':
+                switch ($hidxes->getVersion()) {
+                    case 1:
+                        $hkdxe = $useSingleDirectDebit ? HKDSEv1::createEmpty() : HKDMEv1::createEmpty();
+                    break;
+                    case 2:
+                        $hkdxe = $useSingleDirectDebit ? HKDSEv2::createEmpty() : HKDMEv2::createEmpty();
+                    break;
+                    default:
+                        throw new UnsupportedException('Unsupported HKDME or HKDSE version: ' . $hidxes->getVersion());
+                }
+                break;
+            case 'B2B':
+                switch ($hidxes->getVersion()) {
+                    case 1:
+                        $hkdxe = $useSingleDirectDebit ? HKBSEv1::createEmpty() : HKBMEv1::createEmpty();
+                    break;
+                    case 2:
+                        $hkdxe = $useSingleDirectDebit ? HKBSEv2::createEmpty() : HKBMEv2::createEmpty();
+                    break;
+                    default:
+                        throw new UnsupportedException('Unsupported HKBME or HKBSE version: ' . $hidxes->getVersion());
+                }
+                break;
+
             default:
-                throw new UnsupportedException('Unsupported HKDME or HKDSE version: ' . $hidxes->getVersion());
+                    throw new UnsupportedException('Unsupported Type: ' . $this->coreType);
         }
 
         $hkdxe->kontoverbindungInternational = Kti::fromAccount($this->account);
