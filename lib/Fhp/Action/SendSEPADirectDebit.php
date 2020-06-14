@@ -7,20 +7,12 @@ use Fhp\Model\SEPAAccount;
 use Fhp\Protocol\BPD;
 use Fhp\Protocol\UPD;
 use Fhp\Segment\BaseSegment;
-use Fhp\Segment\BME\HKBMEv1;
-use Fhp\Segment\BME\HKBMEv2;
-use Fhp\Segment\BSE\HKBSEv1;
-use Fhp\Segment\BSE\HKBSEv2;
 use Fhp\Segment\Common\Btg;
 use Fhp\Segment\Common\Kti;
 use Fhp\Segment\DME\HIDMESv1;
 use Fhp\Segment\DME\HIDMESv2;
-use Fhp\Segment\DME\HIDXES;
-use Fhp\Segment\DME\HKDMEv1;
-use Fhp\Segment\DME\HKDMEv2;
 use Fhp\Segment\DSE\HIDSESv2;
-use Fhp\Segment\DSE\HKDSEv1;
-use Fhp\Segment\DSE\HKDSEv2;
+use Fhp\Segment\DSE\HIDXES;
 use Fhp\Segment\SPA\HISPAS;
 use Fhp\Syntax\Bin;
 use Fhp\UnsupportedException;
@@ -96,17 +88,7 @@ class SendSEPADirectDebit extends BaseAction
         }
 
         /* @var HIDXES|BaseSegment $hidxes */
-        switch ($this->coreType) {
-            case 'CORE':
-            case 'COR1':
-                $hidxes = $bpd->requireLatestSupportedParameters($useSingleDirectDebit ? 'HIDSES' : 'HIDMES');
-                break;
-            case 'B2B':
-                $hidxes = $bpd->requireLatestSupportedParameters($useSingleDirectDebit ? 'HIBSES' : 'HIBMES');
-                break;
-            default:
-                throw new UnsupportedException('Unsupported Type: ' . $this->coreType);
-        }
+        $hidxes = $bpd->requireLatestSupportedParameters(GetSEPADirectDebitParameters::getHixxesSegmentName($this->coreType, $useSingleDirectDebit));
 
         $supportedPainNamespaces = null;
 
@@ -127,39 +109,8 @@ class SendSEPADirectDebit extends BaseAction
                 . implode(', ', $supportedPainNamespaces));
         }
 
-        /** @var HKDMEv1|HKDSEv1 $hkdxe */
-        $hkdxe = null;
-        switch ($this->coreType) {
-            case 'CORE':
-            case 'COR1':
-                switch ($hidxes->getVersion()) {
-                    case 1:
-                        $hkdxe = $useSingleDirectDebit ? HKDSEv1::createEmpty() : HKDMEv1::createEmpty();
-                    break;
-                    case 2:
-                        $hkdxe = $useSingleDirectDebit ? HKDSEv2::createEmpty() : HKDMEv2::createEmpty();
-                    break;
-                    default:
-                        throw new UnsupportedException('Unsupported HKDME or HKDSE version: ' . $hidxes->getVersion());
-                }
-                break;
-            case 'B2B':
-                switch ($hidxes->getVersion()) {
-                    case 1:
-                        $hkdxe = $useSingleDirectDebit ? HKBSEv1::createEmpty() : HKBMEv1::createEmpty();
-                    break;
-                    case 2:
-                        $hkdxe = $useSingleDirectDebit ? HKBSEv2::createEmpty() : HKBMEv2::createEmpty();
-                    break;
-                    default:
-                        throw new UnsupportedException('Unsupported HKBME or HKBSE version: ' . $hidxes->getVersion());
-                }
-                break;
-
-            default:
-                    throw new UnsupportedException('Unsupported Type: ' . $this->coreType);
-        }
-
+        /** @var mixed $hkdxe */ // TODO Put a new interface type here.
+        $hkdxe = $hidxes->createRequestSegment();
         $hkdxe->kontoverbindungInternational = Kti::fromAccount($this->account);
         $hkdxe->sepaDescriptor = $this->painNamespace;
         $hkdxe->sepaPainMessage = new Bin($this->painMessage);

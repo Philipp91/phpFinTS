@@ -3,6 +3,7 @@
 namespace Fhp\Segment\BME;
 
 use Fhp\Segment\BaseGeschaeftsvorfallparameter;
+use Fhp\Segment\BaseSegment;
 use Fhp\Segment\DSE\HIDXES;
 use Fhp\Segment\DSE\SEPADirectDebitMinimalLeadTimeProvider;
 
@@ -20,5 +21,10 @@ class HIBMESv1 extends BaseGeschaeftsvorfallparameter implements HIDXES
     public function getParameter(): SEPADirectDebitMinimalLeadTimeProvider
     {
         return $this->parameter;
+    }
+
+    public function createRequestSegment(): BaseSegment
+    {
+        return HKBMEv1::createEmpty();
     }
 }

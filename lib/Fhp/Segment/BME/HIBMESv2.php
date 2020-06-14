@@ -2,6 +2,8 @@
 
 namespace Fhp\Segment\BME;
 
+use Fhp\Segment\BaseSegment;
+
 /**
  * Segment: Terminierte SEPA-Sammellastschrift einreichen Parameter
  *
@@ -10,4 +12,8 @@ namespace Fhp\Segment\BME;
  */
 class HIBMESv2 extends HIBMESv1
 {
+    public function createRequestSegment(): BaseSegment
+    {
+        return HKBMEv2::createEmpty();
+    }
 }

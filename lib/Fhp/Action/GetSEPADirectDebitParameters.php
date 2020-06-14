@@ -25,8 +25,8 @@ class GetSEPADirectDebitParameters extends BaseAction
     /** @var bool */
     private $singleDirectDebit;
 
-    /** @var MinimaleVorlaufzeitSEPALastschrift|null */
-    private $minimalLeadTime;
+    /** @var HIDXES */
+    private $hidxes;
 
     public static function create(string $seqType, bool $singleDirectDebit, string $coreType = 'CORE')
     {
@@ -43,28 +43,24 @@ class GetSEPADirectDebitParameters extends BaseAction
         return $result;
     }
 
-    /** {@inheritdoc} */
-    public function createRequest(BPD $bpd, ?UPD $upd)
+    public static function getHixxesSegmentName(string $coreType, bool $singleDirectDebit): string
     {
-        switch ($this->coreType) {
+        switch ($coreType) {
             case 'CORE':
             case 'COR1':
-                $type = $this->singleDirectDebit ? 'HIDSES' : 'HIDMES';
-                break;
+                return $singleDirectDebit ? 'HIDSES' : 'HIDMES';
             case 'B2B':
-                $type = $this->singleDirectDebit ? 'HIBSES' : 'HIBMES';
-                break;
+                return $singleDirectDebit ? 'HIBSES' : 'HIBMES';
             default:
                 throw new \InvalidArgumentException('Unknown CORE type, possible values are ' . implode(', ', self::CORE_TYPES));
         }
+    }
 
-        /** @var HIDXES $hidxes */
-        $hidxes = $bpd->requireLatestSupportedParameters($type);
-
-        $this->minimalLeadTime = $hidxes->getParameter()->getMinimalLeadTime($this->seqType, $this->coreType);
-
-        // No request to the bank required
-        return [];
+    /** {@inheritdoc} */
+    public function createRequest(BPD $bpd, ?UPD $upd)
+    {
+        $this->hidxes = $bpd->requireLatestSupportedParameters(static::getHixxesSegmentName($this->coreType, $this->singleDirectDebit));
+        return []; // No request to the bank required
     }
 
     /**
@@ -72,7 +68,6 @@ class GetSEPADirectDebitParameters extends BaseAction
      */
     public function getMinimalLeadTime(): ?MinimaleVorlaufzeitSEPALastschrift
     {
-        //$this->ensureSuccess();
-        return $this->minimalLeadTime;
+        return $this->hidxes->getParameter()->getMinimalLeadTime($this->seqType, $this->coreType);
     }
 }
