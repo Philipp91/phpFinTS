@@ -4,10 +4,11 @@
 namespace Tests\Fhp\Syntax;
 
 use Fhp\Syntax\Serializer;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class SerializerTest extends \PHPUnit\Framework\TestCase
 {
-    public function escapeProvider(): array
+    public static function escapeProvider(): array
     {
         return [ // expected, input
             ['ABC?+DEF', 'ABC+DEF'],
@@ -26,13 +27,13 @@ class SerializerTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /** @dataProvider escapeProvider */
+    #[DataProvider('escapeProvider')]
     public function testEscape($expected, $input)
     {
         $this->assertEquals($expected, Serializer::escape($input));
     }
 
-    public function provideSerializeDataElement(): array
+    public static function provideSerializeDataElement(): array
     {
         return [ // expected, value, type
             ['15', 15, 'int'],
@@ -50,7 +51,7 @@ class SerializerTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /** @dataProvider provideSerializeDataElement */
+    #[DataProvider('provideSerializeDataElement')]
     public function testSerializeDataElement($expected, $value, $type)
     {
         $this->assertSame($expected, Serializer::serializeDataElement($value, $type));

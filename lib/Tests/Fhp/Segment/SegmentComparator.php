@@ -11,7 +11,7 @@ use SebastianBergmann\Comparator\ObjectComparator;
  */
 class SegmentComparator extends ObjectComparator
 {
-    public function accepts($expected, $actual)
+    public function accepts($expected, $actual): bool
     {
         if ($expected instanceof BaseSegment && $actual instanceof BaseSegment) {
             return true;
@@ -22,7 +22,7 @@ class SegmentComparator extends ObjectComparator
         return false;
     }
 
-    protected function toArray($object)
+    protected function toArray($object): array
     {
         $array = parent::toArray($object);
         unset($array['descriptor']);
