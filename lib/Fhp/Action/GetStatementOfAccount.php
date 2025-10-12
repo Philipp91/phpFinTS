@@ -81,14 +81,6 @@ class GetStatementOfAccount extends PaginateableAction
         return $result;
     }
 
-    /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     */
-    public function serialize(): string
-    {
-        return serialize($this->__serialize());
-    }
-
     public function __serialize(): array
     {
         return [
@@ -98,17 +90,6 @@ class GetStatementOfAccount extends PaginateableAction
         ];
     }
 
-    /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     *
-     * @param string $serialized
-     * @return void
-     */
-    public function unserialize($serialized)
-    {
-        self::__unserialize(unserialize($serialized));
-    }
-
     public function __unserialize(array $serialized): void
     {
         list(
@@ -116,10 +97,7 @@ class GetStatementOfAccount extends PaginateableAction
             $this->account, $this->from, $this->to, $this->allAccounts, $this->includeUnbooked,
             $this->bankName,
         ) = $serialized;
-
-        is_array($parentSerialized) ?
-            parent::__unserialize($parentSerialized) :
-            parent::unserialize($parentSerialized);
+        parent::__unserialize($parentSerialized);
     }
 
     /**

@@ -38,7 +38,7 @@ use Fhp\Segment\HIRMS\Rueckmeldungscode;
  * The implementation of an action consists of two parts: assembling the request to the bank, and processing the
  * response.
  */
-abstract class BaseAction implements \Serializable
+abstract class BaseAction
 {
     /** @var int[] Stores segment numbers that were assigned to the segments returned from {@link createRequest()}. */
     protected ?array $requestSegmentNumbers = null;
@@ -67,24 +67,11 @@ abstract class BaseAction implements \Serializable
     public ?string $successMessage = null;
 
     /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     *
      * NOTE: A common mistake is to call this function directly. Instead, you probably want `serialize($instance)`.
      *
-     * An action can only be serialized *after* it has been executed in case it needs a TAN, i.e. when the result is not
-     * present yet.
-     * If a sub-class overrides this, it should call the parent function and include it in its result.
-     * @return string The serialized action, e.g. for storage in a database. This will not contain sensitive user data.
-     */
-    public function serialize(): string
-    {
-        return serialize($this->__serialize());
-    }
-
-    /**
      * An action can only be serialized *after* it has been executed and *if* it wasn't completed yet (e.g. because it
-     * still requires a TAN or VOP confirmation).
-     * If a sub-class overrides this, it should call the parent function and include it in its result.
+     *  still requires a TAN or VOP confirmation).
+     *  If a sub-class overrides this, it should call the parent function and include it in its result.
      *
      * @return array The serialized action, e.g. for storage in a database. This will not contain sensitive user data.
      */
@@ -98,17 +85,6 @@ abstract class BaseAction implements \Serializable
             $this->tanRequest,
             $this->needTanForSegment,
         ];
-    }
-
-    /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     *
-     * @param string $serialized
-     * @return void
-     */
-    public function unserialize($serialized)
-    {
-        self::__unserialize(unserialize($serialized));
     }
 
     public function __unserialize(array $serialized): void

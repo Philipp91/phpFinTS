@@ -132,8 +132,8 @@ class FinTs
     }
 
     /**
-     * Returns a serialized form this object. This is different from PHP's {@link \Serializable} in that it only
-     * serializes parts and cannot simply be restored with {@link unserialize()}, because the {@link FinTsOptions} and
+     * Returns a serialized form this object. This is different from PHP's standard `__serialize()` in that it only
+     * serializes parts and cannot simply be restored with `__unserialize()`, because the {@link FinTsOptions} and
      * the {@link Credentials} need to be passed to {@link FinTs::new()}, in addition to the string returned here.
      *
      * Alternatively, you can use {@link loadPersistedInstance()} to separate constructing the instance and resuming it.

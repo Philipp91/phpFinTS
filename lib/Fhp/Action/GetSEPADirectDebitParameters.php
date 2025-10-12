@@ -42,14 +42,6 @@ class GetSEPADirectDebitParameters extends BaseAction
         return $result;
     }
 
-    /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     */
-    public function serialize(): string
-    {
-        return serialize($this->__serialize());
-    }
-
     public function __serialize(): array
     {
         return [
@@ -58,27 +50,13 @@ class GetSEPADirectDebitParameters extends BaseAction
         ];
     }
 
-    /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     *
-     * @param string $serialized
-     * @return void
-     */
-    public function unserialize($serialized)
-    {
-        self::__unserialize(unserialize($serialized));
-    }
-
     public function __unserialize(array $serialized): void
     {
         list(
             $parentSerialized,
             $this->directDebitType, $this->seqType, $this->singleDirectDebit,
         ) = $serialized;
-
-        is_array($parentSerialized) ?
-            parent::__unserialize($parentSerialized) :
-            parent::unserialize($parentSerialized);
+        parent::__unserialize($parentSerialized);
     }
 
     public static function getHixxesSegmentName(string $directDebitType, bool $singleDirectDebit): string

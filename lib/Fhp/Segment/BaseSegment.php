@@ -11,7 +11,7 @@ use Fhp\Syntax\Serializer;
  * determine the structure of the segment. The order matters for the wire format, whereas the field names are only used
  * for documentation/readability purposes within this library. See {@link HITANSv6} for an example of a sub-class.
  */
-abstract class BaseSegment implements SegmentInterface, \Serializable
+abstract class BaseSegment implements SegmentInterface
 {
     /** Reference to the descriptor for this type of segment. */
     private ?SegmentDescriptor $descriptor = null;
@@ -62,37 +62,18 @@ abstract class BaseSegment implements SegmentInterface, \Serializable
     }
 
     /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     *
      * Short-hand for {@link Serializer::serializeSegment()}.
      * @return string The HBCI wire format representation of this segment, in ISO-8859-1 encoding, terminated by the
      *     segment delimiter.
      */
     public function serialize(): string
     {
-        return $this->__serialize()[0];
+        return Serializer::serializeSegment($this);
     }
 
-    /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     *
-     * @param string $serialized
-     * @return void
-     */
-    public function unserialize($serialized)
-    {
-        self::__unserialize([$serialized]);
-    }
-
-    /**
-     * Short-hand for {@link Serializer::serializeSegment()}.
-     *
-     * @return array [0]: The HBCI wire format representation of this segment, in ISO-8859-1 encoding, terminated by the
-     *     segment delimiter.
-     */
     public function __serialize(): array
     {
-        return [Serializer::serializeSegment($this)];
+        return [$this->serialize()];
     }
 
     public function __unserialize(array $serialized): void

@@ -9,7 +9,7 @@ use Fhp\UnsupportedException;
 /**
  * Base class for Data Element Groups (Datenelement-Gruppen; DEGs).
  */
-abstract class BaseDeg implements \Serializable
+abstract class BaseDeg
 {
     /**
      * Reference to the descriptor for this type of segment.
@@ -43,41 +43,19 @@ abstract class BaseDeg implements \Serializable
     }
 
     /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     *
      * Short-hand for {@link Serializer::serializeDeg()}.
      * @return string The HBCI wire format representation of this DEG.
      */
     public function serialize(): string
     {
-        return $this->__serialize()[0];
+        return Serializer::serializeDeg($this, $this->getDescriptor());
     }
 
-    /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     *
-     * Parses into the current instance.
-     * @param string $serialized The HBCI wire format for a DEG of this type.
-     */
-    public function unserialize($serialized)
-    {
-        self::__unserialize([$serialized]);
-    }
-
-    /**
-     * Short-hand for {@link Serializer::serializeDeg()}.
-     * @return array [0]: The HBCI wire format representation of this DEG.
-     */
     public function __serialize(): array
     {
         return [Serializer::serializeDeg($this, $this->getDescriptor())];
     }
 
-    /**
-     * Parses into the current instance.
-     *
-     * @param array $serialized [0]: The HBCI wire format for a DEG of this type
-     */
     public function __unserialize(array $serialized): void
     {
         Parser::parseDeg($serialized[0], $this);

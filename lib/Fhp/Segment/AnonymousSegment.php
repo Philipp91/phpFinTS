@@ -8,7 +8,7 @@ use Fhp\Syntax\Parser;
 /**
  * A fallback for segments that were received from the server but are not implemented in this library.
  */
-final class AnonymousSegment extends BaseSegment implements \Serializable
+final class AnonymousSegment extends BaseSegment
 {
     /**
      * The type plus version of the segment, i.e. the class name of the class that would normally implement it.
@@ -48,27 +48,9 @@ final class AnonymousSegment extends BaseSegment implements \Serializable
         // Do nothing, anonymous segments are always valid.
     }
 
-    /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     */
     public function serialize(): string
     {
-        return $this->__serialize()[0];
-    }
-
-    /**
-     * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     *
-     * @return void
-     */
-    public function unserialize($serialized)
-    {
-        self::__unserialize([$serialized]);
-    }
-
-    public function __serialize(): array
-    {
-        $result = $this->segmentkopf->serialize() . Delimiter::ELEMENT .
+        return $this->segmentkopf->serialize() . Delimiter::ELEMENT .
             implode(Delimiter::ELEMENT, array_map(function ($element) {
                 if ($element === null) {
                     return '';
@@ -79,8 +61,6 @@ final class AnonymousSegment extends BaseSegment implements \Serializable
                 return implode(Delimiter::GROUP, $element);
             }, $this->elements))
             . Delimiter::SEGMENT;
-
-        return [$result];
     }
 
     public function __unserialize(array $serialized): void
