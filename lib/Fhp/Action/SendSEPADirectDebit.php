@@ -162,24 +162,12 @@ class SendSEPADirectDebit extends BaseAction
                 . implode(', ', $supportedPainNamespaces));
         }
 
-        /** @var mixed $hkdxe */ // TODO Put a new interface type here.
-        $hkdxe = $hidxes->createRequestSegment();
-        $hkdxe->kontoverbindungInternational = Kti::fromAccount($this->account);
-        $hkdxe->sepaDescriptor = $this->painNamespace;
-        $hkdxe->sepaPainMessage = new Bin($this->painMessage);
-
-        if (!$useSingleDirectDebit) {
-            if ($hidxes->getParameter()->einzelbuchungErlaubt) {
-                $hkdxe->einzelbuchungGewuenscht = false;
-            }
-
-            /* @var HIDMESv1 $hidxes */
-            // Just always send the control sum
-            // if ($hidxes->getParameter()->summenfeldBenoetigt) {
-            $hkdxe->summenfeld = Btg::create($this->ctrlSum);
-            // }
-        }
-
-        return $hkdxe;
+        return $hidxes->createRequestSegment(
+            Kti::fromAccount($this->account),
+            $this->painNamespace,
+            new Bin($this->painMessage),
+            einzelbuchungGewuenscht: $useSingleDirectDebit || !$hidxes->getParameter()->einzelbuchungErlaubt ? null : false,
+            summenfeld: $useSingleDirectDebit ? null : Btg::create($this->ctrlSum),
+        );
     }
 }

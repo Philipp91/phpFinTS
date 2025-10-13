@@ -4,6 +4,9 @@ namespace Fhp\Segment\DSE;
 
 use Fhp\Segment\BaseGeschaeftsvorfallparameter;
 use Fhp\Segment\BaseSegment;
+use Fhp\Segment\Common\Btg;
+use Fhp\Segment\Common\Kti;
+use Fhp\Syntax\Bin;
 
 /**
  * Segment: Terminierte SEPA-Einzellastschrift einreichen Parameter
@@ -20,8 +23,19 @@ class HIDSESv2 extends BaseGeschaeftsvorfallparameter implements HIDXES
         return $this->parameter;
     }
 
-    public function createRequestSegment(): BaseSegment
-    {
-        return HKDSEv2::createEmpty();
+    public function createRequestSegment(
+        Kti $kontoverbindungInternational,
+        string $sepaDescriptor,
+        Bin $sepaPainMessage,
+        ?bool $einzelbuchungGewuenscht,
+        ?Btg $summenfeld,
+    ): BaseSegment {
+        $result = HKDSEv2::createEmpty();
+        $result->kontoverbindungInternational = $kontoverbindungInternational;
+        $result->sepaDescriptor = $sepaDescriptor;
+        $result->sepaPainMessage = $sepaPainMessage;
+        $result->einzelbuchungGewuenscht = $einzelbuchungGewuenscht;
+        $result->summenfeld = $summenfeld;
+        return $result;
     }
 }

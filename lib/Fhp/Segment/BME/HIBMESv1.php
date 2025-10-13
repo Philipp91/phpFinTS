@@ -4,8 +4,11 @@ namespace Fhp\Segment\BME;
 
 use Fhp\Segment\BaseGeschaeftsvorfallparameter;
 use Fhp\Segment\BaseSegment;
+use Fhp\Segment\Common\Btg;
+use Fhp\Segment\Common\Kti;
 use Fhp\Segment\DSE\HIDXES;
 use Fhp\Segment\DSE\SEPADirectDebitMinimalLeadTimeProvider;
+use Fhp\Syntax\Bin;
 
 /**
  * Segment: Terminierte SEPA-Sammellastschrift einreichen Parameter
@@ -22,8 +25,19 @@ class HIBMESv1 extends BaseGeschaeftsvorfallparameter implements HIDXES
         return $this->parameter;
     }
 
-    public function createRequestSegment(): BaseSegment
-    {
-        return HKBMEv1::createEmpty();
+    public function createRequestSegment(
+        Kti $kontoverbindungInternational,
+        string $sepaDescriptor,
+        Bin $sepaPainMessage,
+        ?bool $einzelbuchungGewuenscht,
+        ?Btg $summenfeld,
+    ): BaseSegment {
+        $result = HKBMEv1::createEmpty();
+        $result->kontoverbindungInternational = $kontoverbindungInternational;
+        $result->sepaDescriptor = $sepaDescriptor;
+        $result->sepaPainMessage = $sepaPainMessage;
+        $result->einzelbuchungGewuenscht = $einzelbuchungGewuenscht;
+        $result->summenfeld = $summenfeld;
+        return $result;
     }
 }
