@@ -33,8 +33,6 @@ abstract class PaginateableAction extends BaseAction
 
     /**
      * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     *
-     * {@inheritdoc}
      */
     public function serialize(): string
     {
@@ -52,8 +50,6 @@ abstract class PaginateableAction extends BaseAction
 
     /**
      * @deprecated Beginning from PHP7.4 __unserialize is used for new generated strings, then this method is only used for previously generated strings - remove after May 2023
-     *
-     * {@inheritdoc}
      */
     public function unserialize($serialized)
     {
@@ -81,7 +77,6 @@ abstract class PaginateableAction extends BaseAction
         return !$this->isDone() && $this->paginationToken !== null;
     }
 
-    /** {@inheritdoc} */
     public function processResponse(Message $response)
     {
         if (($pagination = $response->findRueckmeldung(Rueckmeldungscode::PAGINATION)) !== null) {
@@ -96,7 +91,6 @@ abstract class PaginateableAction extends BaseAction
         }
     }
 
-    /** {@inheritdoc} */
     public function getNextRequest(?BPD $bpd, ?UPD $upd)
     {
         if ($this->requestSegments === null) {
