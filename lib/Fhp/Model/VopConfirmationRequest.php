@@ -15,7 +15,7 @@ interface VopConfirmationRequest
     public function getExpiration(): ?\DateTime;
 
     /** The main outcome of the payee verification. See {@link VopVerificationResult} for possible values. */
-    public function getVerificationResult(): ?string;
+    public function getVerificationResult(): ?VopVerificationResult;
 
     /**
      * If {@link getVerificationResult()} returns {@link VopVerificationResult::NotApplicable}, then this function MAY

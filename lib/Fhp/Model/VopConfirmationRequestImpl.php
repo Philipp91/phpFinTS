@@ -10,14 +10,14 @@ class VopConfirmationRequestImpl implements VopConfirmationRequest
     private Bin $vopId;
     private ?\DateTime $expiration;
     private ?string $informationForUser;
-    private ?string $verificationResult;
+    private ?VopVerificationResult $verificationResult;
     private ?string $verificationNotApplicableReason;
 
     public function __construct(
         Bin $vopId,
         ?\DateTime $expiration,
         ?string $informationForUser,
-        ?string $verificationResult,
+        ?VopVerificationResult $verificationResult,
         ?string $verificationNotApplicableReason,
     ) {
         $this->vopId = $vopId;
@@ -42,7 +42,7 @@ class VopConfirmationRequestImpl implements VopConfirmationRequest
         return $this->informationForUser;
     }
 
-    public function getVerificationResult(): ?string
+    public function getVerificationResult(): ?VopVerificationResult
     {
         return $this->verificationResult;
     }
