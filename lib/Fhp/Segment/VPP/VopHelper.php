@@ -130,10 +130,8 @@ class VopHelper
         }
 
         return new VopConfirmationRequestImpl(
-            $hivpp->vopId,
-            $hivpp->vopIdGueltigBis?->asDateTime(),
-            $hivpp->aufklaerungstextAutorisierungTrotzAbweichung,
-            $verificationResult,
+            $hivpp,
+            VopVerificationResult::parse($verificationResultCode),
             $verificationNotApplicableReason,
         );
     }
